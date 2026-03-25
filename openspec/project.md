@@ -11,9 +11,9 @@
 - 醫師：報告判讀（與外部報告流程銜接）
 - 管理者：統計與報表
 
-## 技術棧
+## 技術架構
 
-**TBD**（實作階段決定：後端語言／框架、資料庫、前端框架、部署環境）。**LDCT 報告欄位擷取**預計使用 **LLM**（服務型態須經院方資安核定，見變更內 `design.md`）。
+**TBD**（實作階段定案）：前後端應用、資料庫、部署拓撲與周邊服務介接（含 **LLM** 用於 LDCT 報告欄位擷取，服務型態須經院方資安核定，見變更內 `design.md`）。
 
 ## 法遵與資安（待院方資安／法遵補齊）
 
@@ -40,6 +40,8 @@
 ## 相關文件
 
 - 計畫書（與本專案同步）：[計畫書.md](../計畫書.md)
+- 系統分析：[docs/SA.md](../docs/SA.md)
+- 系統設計：[docs/SD.md](../docs/SD.md)
 - 變更提案：[changes/add-ldct-case-management-platform/proposal.md](changes/add-ldct-case-management-platform/proposal.md)
 - 本機驗證（若已安裝 OpenSpec CLI）：`openspec validate add-ldct-case-management-platform --strict`
 - 部署後合併：`openspec archive add-ldct-case-management-platform --yes`
