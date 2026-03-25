@@ -69,16 +69,17 @@
 
 ### reporting（[`specs/reporting/spec.md`](specs/reporting/spec.md)）
 
-- [ ] **月報表（Monthly Report）** — 月份匯出 Scenario
-- [ ] **管理報表（Management Dashboard Report）** — 統計一致 Scenario
-- [ ] **報表匯出（Export）** — 下載 Scenario
+- [ ] **報表資料集供應（Reporting Dataset Provisioning）** — 授權、語意一致 Scenario
+- [ ] **資料集涵蓋之分析維度（Dataset Coverage for Analytics）** — 月報／管理維度、與清單一致 Scenario
+- [ ] **Power BI 連線與資料重新整理（Power BI Connectivity and Refresh）** — 連線文件、失敗追查 Scenario
+- [ ] **本平台內建報表之定位（Optional In-App Reporting）** — 與 Power BI 不矛盾 Scenario
 
 ### rbac（[`specs/rbac/spec.md`](specs/rbac/spec.md)）
 
 - [ ] **個案管理師角色（Case Manager Role）** — 操作、連結 HIS Scenario
 - [ ] **護理師角色（Nurse Role）** — 問卷 Scenario
 - [ ] **醫師角色（Physician Role）** — 判讀 Scenario
-- [ ] **管理者角色（Administrator Role）** — 報表 Scenario
+- [ ] **管理者角色（Administrator Role）** — 資料集／Power BI 報表 Scenario
 - [ ] **身分驗證與授權（Authentication and Authorization）** — 未授權 Scenario
 
 ### system-integrations（[`specs/system-integrations/spec.md`](specs/system-integrations/spec.md)）
@@ -88,11 +89,12 @@
 - [ ] **LLM 服務整合（LLM Service Integration）** — 模型版本、失敗重試、資安 Scenario
 - [ ] **問卷系統整合（Survey System Integration）** — 鍵一致 Scenario
 - [ ] **簡訊平台整合（SMS Platform Integration）** — 與 sms-fetnet 一致 Scenario
+- [ ] **Power BI 報表與視覺化（Power BI Analytics）** — 建模、權限與閘道 Scenario
 
 ## 端到端驗收（跨多 Scenario）
 
 - [ ] 匯入健檢＋報告後（含 LLM 擷取非結構化報告若適用），個案出現於總清單且追蹤分類正確（data-sources、case-list、follow-up-lists）
 - [ ] 追蹤清單筆數與未結案數與實際一致（follow-up-lists、case-closure）
-- [ ] 完成一輪簡訊／電訪紀錄後，列表與報表可反映（follow-up-workflow、follow-up-logging、sms-fetnet、reporting）
+- [ ] 完成一輪簡訊／電訪紀錄後，資料集與 Power BI 報表可反映相同語意（follow-up-workflow、follow-up-logging、sms-fetnet、reporting、system-integrations）
 - [ ] 個管師可自個案連結 HIS 查詢並於追蹤紀錄註記（system-integrations、follow-up-logging、rbac）
 - [ ] 結案代碼與統計口徑一致（case-closure、reporting）

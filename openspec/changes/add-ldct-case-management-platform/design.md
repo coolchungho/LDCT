@@ -10,6 +10,7 @@
 | 問卷系統 | API 或批次檔 | 依院方既有問卷系統能力 |
 | HIS | **個管師**自本平台**連結／開啟**院內 HIS（SSO、深層連結或新視窗 URL 模板，院方定案）；查詢介面與權限以 HIS 為準；本平台記錄「查詢結果摘要」或註記（見 `follow-up-logging`） | 不強制即時雙向寫回 HIS；連結需通過資安與身分驗證評估 |
 | 遠傳公務機簡訊 | `https://umc.fetnet.net` 所提供之 API／介面 | 憑證與範本由院方申請 |
+| Power BI | **報表與視覺化**（月報、管理儀表等） | 連線本平台提供之**報表資料集**；與 LDCT 報告自 EHR 匯入**無涉**（見 `system-integrations`） |
 
 ## 追蹤狀態（概念）
 
@@ -22,6 +23,12 @@
 - **人工覆核**：預設或依規則要求個管／醫師確認後才視為「已驗證」並驅動追蹤分類（閾值與流程於實作與院方共定）。
 - **稽核**：保留模型版本、輸入摘要長度或雜湊（避免重存全文若院方禁止）、LLM 輸出與人工修正差異。
 
+## Power BI 與報表資料集（概念）
+
+- 本平台維護營運資料庫（或匯出檔），並暴露**語意一致之報表資料集**（檢視、API、CSV、或 OData 等，院方定案）。
+- **Microsoft Power BI** 透過閘道或直接連線取得資料集，由資訊單位或管理者建立語意模型、DAX 量值、月報與儀表板；**圖表類型與版面以 Power BI 為準**。
+- 建議文件化：欄位字典、追蹤完成率之分子分母定義、與本平台清單篩選之對應，避免口徑歧義。
+
 ## 資料流（摘要）
 
 ```mermaid
@@ -32,13 +39,14 @@ flowchart LR
     LLM[LLM_Service]
     SV[Survey]
     HIS[HIS]
+    PBI[PowerBI_Analytics]
   end
   subgraph app [LDCT_Platform]
     IN[ImportSync]
     CR[CaseRegistry]
     FU[FollowUp]
     SM[SMS]
-    RP[Reports]
+    DS[ReportingDataset]
   end
   HC --> IN
   EHR --> IN
@@ -49,12 +57,13 @@ flowchart LR
   IN --> CR
   CR --> FU
   FU --> SM
-  CR --> RP
-  FU --> RP
+  CR --> DS
+  FU --> DS
+  DS --> PBI
   CR -->|case_mgr_link| HIS
 ```
 
-（`case_mgr_link`：個管師自個案畫面開啟 HIS 以確認門診／手術等；為**出站**連結，非批次匯入。）
+（`case_mgr_link`：個管師自個案畫面開啟 HIS 以確認門診／手術等；為**出站**連結，非批次匯入。`ReportingDataset` 供 Power BI 連線；視覺化在 Power BI 完成。）
 
 ## 待決議事項
 
@@ -62,5 +71,6 @@ flowchart LR
 - **EHR** 取得 LDCT 報告之介面規格（API、檔案格式、排程頻率、錯誤重試）。
 - **LLM**：模型選型、地端／雲端、提示詞與輸出 schema、信心閾值、**PHI 最小化**與失敗時純人工路徑。
 - **HIS**：SSO 與否、URL 參數（病歷號／病人 ID）、連結逾時與錯誤頁處理。
+- **Power BI**：連線方式（閘道、Import／DirectQuery）、工作區權限、資料集刷新頻率與 SLA。
 - 簡訊 API 錯誤重試、退件處理與範本變更流程。
-- 個資欄位遮罩規則（依角色）。
+- 個資欄位遮罩規則（依角色）；**報表資料集**是否需去識別或列級安全（RLS）於 Power BI 側設定。

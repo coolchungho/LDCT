@@ -76,3 +76,19 @@
 
 - **WHEN** 發送追蹤簡訊
 - **THEN** 經由該整合發送並記錄（見 `sms-fetnet`）
+
+---
+
+### Requirement: Power BI 報表與視覺化（Power BI Analytics）
+
+系統應（SHALL）以提供**報表資料集**予 **Microsoft Power BI** 作為統計與圖表之主要實作方式（與 `reporting`）；視覺化、儀表板版面與發佈流程於 **Power BI 服務／Desktop** 完成。此整合與「自 EHR 取得 LDCT 報告」無涉；Power BI 於本專案之角色為**分析與報表消費端**，而非 LDCT 報告匯入來源。
+
+#### Scenario: 資料集可供建模
+
+- **WHEN** 資訊人員於 Power BI 建立與本平臺資料集之連線
+- **THEN** 可依 `reporting` 所列維度建立量值與視覺物件
+
+#### Scenario: 權限與閘道
+
+- **WHEN** 連線需經組織網路或資料閘道
+- **THEN** 應遵循院方 IT 對 Power BI 之身分、資料閘道與工作區權限設定（細節見 `design.md`）
