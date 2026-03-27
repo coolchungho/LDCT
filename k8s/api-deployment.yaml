@@ -1,0 +1,74 @@
+# 生產參數（映像、Secret、資源限制）須與院方 IT 定案後調整。
+apiVersion: v1
+kind: Service
+metadata:
+  name: ldct-api
+spec:
+  selector:
+    app: ldct-api
+  ports:
+    - port: 8080
+      targetPort: 8080
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ldct-api
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: ldct-api
+  template:
+    metadata:
+      labels:
+        app: ldct-api
+    spec:
+      containers:
+        - name: api
+          image: ldct-api:latest
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8080
+          env:
+            - name: ASPNETCORE_URLS
+              value: http://+:8080
+            - name: ConnectionStrings__DefaultConnection
+              valueFrom:
+                secretKeyRef:
+                  name: ldct-sql
+                  key: connectionString
+            - name: Jwt__SigningKey
+              valueFrom:
+                secretKeyRef:
+                  name: ldct-jwt
+                  key: signingKey
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 8080
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 8080
+            initialDelaySeconds: 15
+            periodSeconds: 20
+          resources:
+            requests:
+              cpu: "100m"
+              memory: 256Mi
+            limits:
+              cpu: "500m"
+              memory: 512Mi
+---
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: ldct-api-pdb
+spec:
+  minAvailable: 1
+  selector:
+    matchLabels:
+      app: ldct-api

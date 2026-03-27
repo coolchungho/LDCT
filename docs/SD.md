@@ -10,14 +10,19 @@
 - **權威來源分流**：LDCT 報告欄位以 **EHR** 為準；**HIS** 就醫細節以 HIS 為準，本平台僅摘要／註記。
 - **報表與視覺化外置**：統計呈現以 **Power BI** 為主，本平台提供**語意一致之報表資料集**。
 - **非結構化報告**：經 **LLM** 擷取結構化欄位，並保留人工覆核與稽核軌跡。
+- **雛型與交付形態**：**單一解決方案／repo**內 **前後端分離**（Web API ＋ Vue SPA）；**生產部署目標**為 **Kubernetes**。
 
-## 3. 技術架構（TBD）
+## 3. 技術架構
 
-| 面向 | 決策狀態 |
-|------|----------|
-| 應用與資料層（後端／前端／資料庫） | **TBD**（實作前選定） |
+| 面向 | 決策 |
+|------|------|
+| 專案結構 | **同一 repo／方案**：後端 **`src/Api`**（**ASP.NET Core Web API**）、前端 **`src/Web`**（**Vue 3**、**TypeScript**）各為獨立子專／建置產物，介面為 HTTP／JSON API；**Kubernetes** 範例清單見 repo 根目錄 **`k8s/`**。 |
+| 前端 | **Vue 3**、**TypeScript**（建置如 Vite，實作定案）。 |
+| 應用後端 | **ASP.NET Core Web API**（含認證授權、與 SQL、外部系統整合；細節開發階段補件）。 |
+| 資料庫 | **Microsoft SQL Server** |
 | LLM 服務 | 院方核准之端點（地端／私有雲／受控 API） |
 | Power BI | Import／DirectQuery／閘道等依院方 IT |
+| 部署 | **目標：Kubernetes**（Workload、Ingress、Secret、與 SQL 連線策略與院方 IT 定案）；**備援與 RPO／RTO** — **TBD** |
 
 詳見 [openspec/project.md](../openspec/project.md)。
 
@@ -25,10 +30,10 @@
 
 | 模組 | 職責 |
 |------|------|
-| Import／Sync | 健檢名單、EHR 報告、問卷等匯入與同步 |
+| Import／Sync | 健檢名單、EHR 報告、問卷等匯入與同步；**LDCT 報告**以 EHR「已發報告」後**當日晚間批次**落地至 Case Registry／個案清單（見 [計畫書.md](../計畫書.md)、[design.md](../openspec/changes/add-ldct-case-management-platform/design.md)） |
 | **LLM 擷取** 管線 | 非結構化報告 → 結構化欄位（可覆核） |
-| Case Registry | 個案主檔、清單、與報告／問卷關聯 |
-| Follow-up Engine | 追蹤分類、流程階段、清單與提醒 |
+| Case Registry | 個案主檔、清單、與報告／問卷關聯；總清單列尾**追蹤記錄**鈕導向 **`follow-up-logging`**，其餘三連結觸發出站或站內脈絡導向 |
+| Follow-up Engine（概念） | 追蹤欄位與應到日之業務邏輯、提醒；**`follow-up-logging`** 提供個案脈絡下之逐筆登錄、列表、補正稽核，及與 **`sms-fetnet`**／HIS 註記之對應；**總清單**承載主要操作介面，本變更不交付獨立追蹤清單／階段流程模組（見 [計畫書.md](../計畫書.md)、OpenSpec **REMOVED**） |
 | SMS | 遠傳公務機整合、發送與紀錄 |
 | **Reporting Dataset** | 供 Power BI 連線之檢視／API／檔案等 |
 | HIS Link | 個管出站連結（非批次寫入 HIS） |
@@ -119,7 +124,9 @@ flowchart LR
 
 | 文件 | 角色 |
 |------|------|
+| [計畫書.md](../計畫書.md) | 專案計畫摘要；與本文件、SA、`project.md` 應敘述一致 |
 | [SA.md](SA.md) | 需求與業務分析 |
+| [openspec/project.md](../openspec/project.md) | 專案脈絡、技術架構、外部系統表 |
 | [openspec/changes/.../design.md](../openspec/changes/add-ldct-case-management-platform/design.md) | OpenSpec 變更內之設計附錄 |
 | `openspec/changes/.../specs/**/spec.md` | 驗收規格（SHALL／Scenario） |
 

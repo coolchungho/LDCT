@@ -1,0 +1,8 @@
+**/bin/
+**/obj/
+**/.vs/
+*.user
+src/Web/node_modules/
+src/Web/dist/
+.env
+.env.local

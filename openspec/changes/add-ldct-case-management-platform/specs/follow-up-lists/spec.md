@@ -1,36 +1,15 @@
-# follow-up-lists — 追蹤清單管理
+# follow-up-lists — 追蹤清單（本變更不納入）
 
-## ADDED Requirements
+與 [計畫書.md](../../../../../計畫書.md) 第三節對齊：**不**交付獨立「追蹤清單」模組；追蹤欄位、應到日與「本月應追蹤」預設篩選由 **`case-list`** 與 [design.md](../../design.md) 規範。
+
+## REMOVED Requirements
+
+下列草案要件自本變更撤銷，**不**列入驗收。
 
 ### Requirement: 追蹤名單自動分類（Automated Follow-up Buckets）
 
-系統應（SHALL）依 LDCT 報告與院方規則自動產生並維護下列追蹤名單分類：胸腔門診追蹤、3 個月追蹤、6 個月追蹤、12 個月追蹤。
-
-#### Scenario: 個案落入正確分類
-
-- **GIVEN** 個案之報告欄位指示需「胸腔門診」或特定月數追蹤
-- **WHEN** 資料齊備且個案未結案
-- **THEN** 該個案應出現在對應分類之追蹤清單中
-
----
+### Requirement: 追蹤應到日與本月篩選對齊（Due Date from Exam Date and Monthly Window）
 
 ### Requirement: 依追蹤日期排序（Sort by Follow-up Date）
 
-系統應（SHALL）於各追蹤清單內依「追蹤日期」排序（遞增或遞減可切換，預設依院方慣例）。
-
-#### Scenario: 最近需追蹤者優先
-
-- **WHEN** 使用者檢視某追蹤分類清單
-- **THEN** 清單依追蹤日期排序，便於個管排程
-
----
-
 ### Requirement: 清單與未結案筆數（Counts）
-
-系統應（SHALL）顯示：各追蹤清單之筆數，以及尚未結案之筆數（可為總計與分類小計，依 UI 設計至少滿足「尚未結案筆數」「追蹤清單筆數」之可見性）。
-
-#### Scenario: 儀表或清單頁一致性
-
-- **GIVEN** 存在已結案與未結案個案
-- **WHEN** 使用者檢視追蹤清單總覽或分類頁
-- **THEN** 「尚未結案筆數」不包含已結案者；「追蹤清單筆數」與實際列出的未結案可追蹤筆數一致

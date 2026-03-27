@@ -1,0 +1,27 @@
+# TLS、host、 Ingress Controller 類型（nginx、traefik 等）依院方叢集定案。
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: ldct-ingress
+  annotations:
+    # 示例：cert-manager 叢集可改用 appropriate ingress class
+    kubernetes.io/ingress.class: nginx
+spec:
+  rules:
+    - host: ldct.example.hospital
+      http:
+        paths:
+          - path: /api
+            pathType: Prefix
+            backend:
+              service:
+                name: ldct-api
+                port:
+                  number: 8080
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: ldct-web
+                port:
+                  number: 8080

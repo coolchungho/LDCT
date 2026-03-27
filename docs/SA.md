@@ -20,9 +20,9 @@
 
 ## 4. 業務目標（摘要）
 
-- 管理 LDCT 篩檢個案並提供總清單與查詢／篩選。
-- 依報告與規則**自動產生**追蹤分類（胸腔門診、3／6／12 個月等）與追蹤清單。
-- 支援既定追蹤流程（簡訊、電訪次數與順序）與**追蹤紀錄**。
+- 管理 LDCT 篩檢個案並提供總清單與查詢／篩選；總清單**每列**提供**追蹤記錄**（連結至本平台 **`follow-up-logging`**）、**報告查詢**、**基本資料**、**簡訊發送**等列尾連結（後三者之出站 URL 或站內功能與權限見 `case-list` 與 `design.md`）。
+- 依報告與規則產出追蹤相關**欄位與類型**，並以**總清單**搭配預設「本月應追蹤」等篩選支援個管工作（**不**另交付獨立「追蹤清單／追蹤流程」模組；見 [計畫書.md](../計畫書.md) 第三節與 OpenSpec `follow-up-lists`／`follow-up-workflow` 之 **REMOVED**）。
+- 支援簡訊、電訪等**追蹤紀錄**留存（**`follow-up-logging`**：個案脈絡、逐筆登錄、列表與補正稽核、與 **`sms-fetnet`** 發送紀錄及 **HIS 查詢註記**對應）；不依本變更強制結構化「第 N 次簡訊／電訪」流程引擎。
 - 整合**簡訊平台**（遠傳公務機）批次發送並留紀錄。
 - **結案代碼** 0–6 分類與統計口徑一致。
 - **臨床提醒**（病理關鍵字、切片、逾期等）。
@@ -36,9 +36,9 @@
 |------|------------|
 | 資料來源與匯入 | `data-sources` |
 | 個案清單 | `case-list` |
-| 追蹤清單 | `follow-up-lists` |
-| 追蹤流程 | `follow-up-workflow` |
 | 追蹤紀錄 | `follow-up-logging` |
+| ~~追蹤清單~~（本計畫不納入） | `follow-up-lists`（OpenSpec 僅 **REMOVED**） |
+| ~~追蹤流程~~（本計畫不納入） | `follow-up-workflow`（OpenSpec 僅 **REMOVED**） |
 | 簡訊 | `sms-fetnet` |
 | 結案 | `case-closure` |
 | 臨床提醒 | `clinical-alerts` |
@@ -56,6 +56,8 @@
 | 問卷系統 | 肺癌風險評估問卷 |
 | HIS（查詢） | 個管經**連結 HIS** 查詢後，於本平台登錄或註記；確診與病理等 |
 | **本平台** | 營運資料、追蹤紀錄、簡訊紀錄、結案狀態；**報表資料集**供 Power BI |
+
+**落地時機（與計畫書一致）**：EHR **LDCT 報告**於院方定義之「已發報告」後，於**同一曆日之晚間批次**落地至本平台並納入個案總清單可用資料；細部見 [計畫書.md](../計畫書.md) 第二節與 [design.md](../openspec/changes/add-ldct-case-management-platform/design.md)。
 
 ## 7. 外部系統（業務介面）
 
@@ -81,12 +83,14 @@
 
 - **單一詳細規格**：`openspec/changes/add-ldct-case-management-platform/`（`proposal.md`、`specs/**/spec.md`）。
 - **設計補充**：`openspec/changes/add-ldct-case-management-platform/design.md`（與 [SD.md](SD.md) 搭配）。
-- 計畫書摘要：[計畫書.md](../計畫書.md)。
+- **專案脈絡與外部系統表**：[openspec/project.md](../openspec/project.md)。
+- 計畫書摘要（與本文件、SD、`project.md` 應一致）：[計畫書.md](../計畫書.md)。
 
 ## 10. 假設與限制
 
 - 外部系統介面與時程依院方與廠商協調；未確定前以 **TBD** 標示。
 - 影像原始資料若於 RIS／PACS，由院方經 EHR 彙整；本平台**不強制**直連 RIS／PACS（除非另案變更）。
+- **實作技術棧**（摘要）：**單一解決方案／repo 內前後端分離**—後端 **`src/Api`**（**ASP.NET Core Web API**）、前端 **`src/Web`**（**Vue 3**、**TypeScript**）；資料庫 **Microsoft SQL Server**；**生產部署目標**為 **Kubernetes**（範例清單 **`k8s/`**）。細節與待定項目見 [openspec/project.md](../openspec/project.md)、[SD.md](SD.md) 第 3 節、[計畫書.md](../計畫書.md) 第四、五節與變更內 `design.md`「專案結構與部署」；若有變更應一併更新上述文件。
 
 ## 11. 修訂紀錄
 

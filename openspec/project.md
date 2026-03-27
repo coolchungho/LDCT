@@ -13,7 +13,28 @@
 
 ## 技術架構
 
-**TBD**（實作階段定案）：前後端應用、資料庫、部署拓撲與周邊服務介接（含 **LLM** 用於 LDCT 報告欄位擷取，服務型態須經院方資安核定，見變更內 `design.md`）。
+| 層級 | 決策 |
+|------|------|
+| **專案／雛型** | **單一解決方案或儲存庫**內 **前後端分離**：**ASP.NET Core Web API**（後端）＋ **Vue 3** 前端（**TypeScript**）各自獨立子專／建置產物，以 HTTP API 整合（CORS、驗證、Cookie／JWT 等於實作與院方資安定案）。 |
+| **Web 前端** | **Vue 3**、**TypeScript**（建置管線例如 **Vite**，於實作定案）。 |
+| **應用後端** | **ASP.NET Core**（**Web API**）；業務邏輯、排程匯入、**SQL Server** 存取及外部整合（EHR、簡訊等）由此層處理。 |
+| **資料庫** | **Microsoft SQL Server**（營運資料、稽核、報表資料集來源等）。 |
+| **週邊整合** | **LLM**（LDCT 報告欄位擷取）、**EHR**、**HIS** 連結、**Power BI**、簡訊 API 等，介接型態見變更內 `design.md`；LLM 服務型態須經院方資安核定。 |
+| **部署目標** | **Kubernetes（K8s）**（建議後端、前端各一 **Deployment**／**Service**，**Ingress**、TLS、**Secret**／ConfigMap 與 SQL 連線等與院方 IT 定案）。 |
+| **備援** | 叢集拓撲、備援與 **RPO／RTO** — **TBD**（實作前與院方 IT 定案）。 |
+
+## 儲存庫實作目錄（雛型）
+
+| 路徑 | 說明 |
+|------|------|
+| `src/Api` | ASP.NET Core 8 Web API、EF Core、`/api/v1/*`、`/health` |
+| `src/Web` | Vue 3 + TypeScript（Vite）；開發時 proxy 至本機 API |
+| `LDCT.sln` | 方案檔（現含後端專案；前端以 `npm` 建置） |
+| `docker-compose.yml` | 雛型：**SQL Server 2022** + **API** 映像 |
+| `k8s/*.yaml` | 範例：**Deployment**、**Service**、**Ingress**、**PDB**、**HPA**、**Secret** 示意 |
+| `.github/workflows/ci.yml` | CI：`dotnet build` + `npm ci` / `npm run build` |
+
+**測試主機（雛型）**：`10.41.100.1` — 前端 `http://10.41.100.1:5173`、API `http://10.41.100.1:5003`（後端請用 `http-lan` 設定檔或 docker-compose 對外埠）；CORS 與 Vite 設定見 [計畫書.md](../計畫書.md) 第五節。
 
 ## 法遵與資安（待院方資安／法遵補齊）
 
