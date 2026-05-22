@@ -99,6 +99,8 @@ public record SmsSendRequest(string Phone, string Message, bool AutoCreateFollow
 
 public record SmsSendResponse(Guid SmsId, string Status);
 
+public record SmsTemplateDto(string Key, string Name, string Body);
+
 public record ReportViewDto(
     string? Summary,
     bool? HasNodule,

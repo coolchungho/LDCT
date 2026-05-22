@@ -53,7 +53,7 @@
 - [x] **遠傳公務機簡訊平台整合（FET Enterprise SMS Integration）** — 成功／失敗 Scenario（模擬成功寫入；真實 `umc.fetnet.net` 憑證後啟用）
 - [ ] **批次發送簡訊（Batch SMS）** — 批次選取 Scenario
 - [x] **發送紀錄（SMS Audit Log）** — 稽核 Scenario
-- [ ] **簡訊內容範例（SMS Content Template）** — 範本 Scenario
+- [x] **簡訊內容範例（SMS Content Template）** — 範本 Scenario（`GET /api/v1/sms/templates` 目錄；`GET .../templates/{key}/render?caseId=` 帶入姓名／檢查日／追蹤期間變數）
 
 ### case-closure（[`specs/case-closure/spec.md`](specs/case-closure/spec.md)）
 

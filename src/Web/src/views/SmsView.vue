@@ -11,7 +11,17 @@ const message = ref('【LDCT 追蹤提醒】請依約回診或聯繫個管師。
 const autoLog = ref(true)
 const status = ref('')
 
+type SmsTemplate = { key: string; name: string; body: string }
+const templates = ref<SmsTemplate[]>([])
+const selectedTemplate = ref('')
+
 onMounted(async () => {
+  try {
+    const { data } = await api.get('/api/v1/sms/templates')
+    templates.value = data as SmsTemplate[]
+  } catch {
+    /* ignore */
+  }
   if (!caseId.value) return
   try {
     const { data } = await api.get(`/api/v1/cases/${caseId.value}`)
@@ -20,6 +30,24 @@ onMounted(async () => {
     /* ignore */
   }
 })
+
+async function applyTemplate() {
+  const key = selectedTemplate.value
+  if (!key) return
+  const tpl = templates.value.find((t) => t.key === key)
+  if (caseId.value) {
+    try {
+      const { data } = await api.get(
+        `/api/v1/sms/templates/${encodeURIComponent(key)}/render?caseId=${encodeURIComponent(caseId.value)}`
+      )
+      message.value = (data as SmsTemplate).body
+      return
+    } catch {
+      /* fall back to raw template below */
+    }
+  }
+  if (tpl) message.value = tpl.body
+}
 
 async function send() {
   status.value = ''
@@ -39,6 +67,13 @@ async function send() {
     <div class="panel">
       <label>caseId <input v-model="caseId" /></label>
       <label>手機 <input v-model="phone" /></label>
+      <label>
+        範本
+        <select v-model="selectedTemplate" @change="applyTemplate">
+          <option value="">— 選擇範本 —</option>
+          <option v-for="t in templates" :key="t.key" :value="t.key">{{ t.name }}</option>
+        </select>
+      </label>
       <label>內容 <textarea v-model="message" rows="4" /></label>
       <label><input v-model="autoLog" type="checkbox" /> 同步寫入追蹤紀錄（簡訊）</label>
       <button type="button" :disabled="!caseId || !phone" @click="send">送出</button>
@@ -77,7 +112,8 @@ label {
   font-size: 0.9rem;
 }
 input,
-textarea {
+textarea,
+select {
   padding: 0.45rem;
   border-radius: 6px;
   border: 1px solid #cbd5e1;
